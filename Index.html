@@ -1,0 +1,172 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Ezlib — Documentation</title>
+  <style>
+    :root{
+      --bg:#0f1113;--card:#16181a;--accent:#00aaff;--muted:#9aa3ad;--text:#e6eef6;
+    }
+    html,body{height:100%;margin:0;font-family:Inter,Segoe UI,Roboto,system-ui,Arial;background:linear-gradient(180deg,#0b0d0f 0%, #0f1113 100%);color:var(--text)}
+    .wrap{max-width:1100px;margin:36px auto;padding:28px}
+    header{display:flex;align-items:center;gap:18px}
+    .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#6ad1ff);display:flex;align-items:center;justify-content:center;font-weight:700;color:#031217}
+    h1{margin:0;font-size:22px}
+    p.lead{color:var(--muted);margin:6px 0 18px}
+    nav{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}
+    a.btn{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 12px;border-radius:8px;color:var(--text);text-decoration:none;font-size:13px}
+    .grid{display:grid;grid-template-columns:320px 1fr;gap:18px}
+    aside{background:var(--card);padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+    aside h3{margin:0 0 8px;font-size:14px}
+    .toc a{display:block;padding:8px;border-radius:8px;color:var(--muted);text-decoration:none;margin:6px 0}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:22px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+    section h2{margin-top:0}
+    pre{background:#050607;padding:12px;border-radius:8px;overflow:auto;color:#cfefff}
+    code{font-family:monospace;font-size:13px}
+    .note{background:rgba(255,255,255,0.02);padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.02);color:var(--muted)}
+    .prop{display:flex;gap:8px;align-items:center;margin:8px 0}
+    .prop b{width:160px}
+    footer{margin-top:24px;color:var(--muted);font-size:13px}
+    .right{display:flex;gap:8px;align-items:center}
+    @media (max-width:880px){.grid{grid-template-columns:1fr;}.logo{display:none}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">ez</div>
+      <div>
+        <h1>Ezlib</h1>
+        <p class="lead">Lightweight Roblox UI library with custom class names, theme support, and easy callbacks.</p>
+      </div>
+      <div style="margin-left:auto" class="right">
+        <a class="btn" href="#quickstart">Quickstart</a>
+        <a class="btn" href="#api">API</a>
+      </div>
+    </header><nav>
+  <a class="btn" href="#installation">Installation</a>
+  <a class="btn" href="#quickstart">Quickstart</a>
+  <a class="btn" href="#api">API Reference</a>
+  <a class="btn" href="#themes">Themes</a>
+  <a class="btn" href="#examples">Examples</a>
+</nav>
+
+<div class="grid">
+  <aside class="card">
+    <h3>Contents</h3>
+    <div class="toc">
+      <a href="#installation">Installation</a>
+      <a href="#quickstart">Quickstart</a>
+      <a href="#api">API Reference</a>
+      <a href="#components">Components</a>
+      <a href="#themes">Theme System</a>
+      <a href="#examples">Examples</a>
+      <a href="#faq">FAQ</a>
+    </div>
+  </aside>
+
+  <main>
+    <section id="installation" class="card">
+      <h2>Installation</h2>
+      <p class="note">Place <code>ezlib.lua</code> in your project repository. Require it in local scripts in Roblox Studio using <code>require</code>.</p>
+      <pre><code>-- inside a LocalScript
+
+local ezlib = require(game.ReplicatedStorage:WaitForChild("ezlib")) </code></pre> </section>
+
+<section id="quickstart" class="card">
+      <h2>Quickstart</h2>
+      <p>Minimal example that creates a window, adds a button and an inputbox, and shows a notification.</p>
+      <pre><code>local ezlib = require(game.ReplicatedStorage:WaitForChild("ezlib"))
+
+local lib = setmetatable({}, ezlib) local win = lib:Window("Demo Window", UDim2.new(0,420,0,360)) local content = Instance.new("Frame") content.Size = UDim2.new(1,0,1,-40) content.Position = UDim2.new(0,0,0,40) content.Parent = win
+
+local btn = lib:Button(content, "Click me", function() lib:Notification("Button clicked", 2) end)
+
+local box = lib:Inputbox(content, "Type name...", function(text) lib:Notification("You typed: "..text, 2) end)
+
+lib:SetTheme({ BackgroundColor = Color3.fromRGB(32,32,32), TextColor = Color3.fromRGB(240,240,240), AccentColor = Color3.fromRGB(255,120,80), OutlineColor = Color3.fromRGB(60,60,60) }) </code></pre> </section>
+
+<section id="api" class="card">
+      <h2>API Reference</h2>
+      <p>All functions are defined on the ezlib table.</p>
+
+      <h3 id="settheme">ezlib:SetTheme(themeTable)</h3>
+      <p class="note">Applies a theme object to existing UI elements that ezlib created. Theme keys used by ezlib:</p>
+      <div class="prop"><b>Key</b><span>Description</span></div>
+      <div class="prop"><b>BackgroundColor</b><span>Frame background color</span></div>
+      <div class="prop"><b>TextColor</b><span>TextLabel/TextButton/TextBox color</span></div>
+      <div class="prop"><b>AccentColor</b><span>Main accent (buttons, fills)</span></div>
+      <div class="prop"><b>OutlineColor</b><span>UIStroke color</span></div>
+
+      <h3 id="window">ezlib:Window(title, size, position)</h3>
+      <p class="note">Creates a Window (custom Frame) and sets it as <code>self.MainUI</code>. Returns the Window instance.</p>
+      <pre><code>local win = lib:Window("Title", UDim2.new(0,400,0,300), UDim2.new(0.5,-200,0.5,-150))
+
+</code></pre>
+
+<h3 id="button">ezlib:Button(parent, text, callback)</h3>
+      <p class="note">Creates a Button inside <code>parent</code>. The callback runs on click.</p>
+
+      <h3 id="inputbox">ezlib:Inputbox(parent, placeholder, callback)</h3>
+      <p class="note">Creates an Inputbox. When user presses Enter, callback(text) is called.</p>
+
+      <h3 id="checkbox">ezlib:Checkbox(parent, label, default, callback)</h3>
+      <p class="note">Creates a Checkbox with boolean state changes sent to callback.</p>
+
+      <h3 id="slider">ezlib:Slider(parent, min, max, default, callback)</h3>
+      <p class="note">Creates a horizontal Slider. Callback receives numeric value while dragging.</p>
+
+      <h3 id="toggle">ezlib:Toggle(parent, label, default, callback)</h3>
+      <p class="note">Creates a Toggle switch. Callback receives boolean state when toggled.</p>
+
+      <h3 id="notification">ezlib:Notification(text, duration)</h3>
+      <p class="note">Creates a temporary notification attached to <code>self.MainUI</code>.</p>
+    </section>
+
+    <section id="components" class="card">
+      <h2>Components & Styling</h2>
+      <p>ezlib uses these custom class names in place of default Roblox types when describing components:</p>
+      <ul>
+        <li><code>Window</code> — top-level container (Frame)</li>
+        <li><code>Button</code> — clickable control (TextButton)</li>
+        <li><code>Inputbox</code> — TextBox</li>
+        <li><code>Checkbox</code> — checkbox control composed of Frame/TextButton/TextLabel</li>
+        <li><code>Slider</code> — slider composed of Frame(s)</li>
+        <li><code>Toggle</code> — on/off control</li>
+        <li><code>Notification</code> — temporary TextLabel popup</li>
+      </ul>
+    </section>
+
+    <section id="themes" class="card">
+      <h2>Theme System</h2>
+      <p class="note">Change colors at runtime by passing a table to <code>SetTheme</code>. Example themes:</p>
+      <pre><code>lib:SetTheme({
+
+BackgroundColor = Color3.fromRGB(18,18,18), TextColor = Color3.fromRGB(230,230,230), AccentColor = Color3.fromRGB(0,170,255), OutlineColor = Color3.fromRGB(50,50,50) }) </code></pre> </section>
+
+<section id="examples" class="card">
+      <h2>Examples</h2>
+      <h4>Full example: Settings panel</h4>
+      <pre><code>local ezlib = require(game.ReplicatedStorage:WaitForChild("ezlib"))
+
+local lib = setmetatable({}, ezlib) local win = lib:Window("Settings", UDim2.new(0,420,0,420)) local content = Instance.new("Frame") content.Size = UDim2.new(1,0,1,-40) content.Position = UDim2.new(0,0,0,40) content.Parent = win
+
+local soundToggle = lib:Toggle(content, "Sound", true, function(state) print("sound state", state) end) local volSlider = lib:Slider(content, 0, 100, 50, function(value) print("volume", value) end) local saveBtn = lib:Button(content, "Save", function() lib:Notification("Settings saved", 2) end) </code></pre> </section>
+
+<section id="faq" class="card">
+      <h2>FAQ</h2>
+      <p><b>Q:</b> Where do I put ezlib.lua?<br><b>A:</b> Recommended: <code>ReplicatedStorage/ezlib.lua</code> and require from LocalScripts.</p>
+      <p><b>Q:</b> Can I extend components?<br><b>A:</b> Yes — ezlib returns raw Roblox Instances so you can add children or change properties after creation.</p>
+    </section>
+
+    <footer>
+      <div>Ezlib — simple UI library • Generated documentation</div>
+    </footer>
+  </main>
+</div>
+
+  </div>
+</body>
+</html>
